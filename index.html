@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>可愛地鼠挑戰賽 🌸</title>
+    <style>
+        body { background: #fdf0d5; text-align: center; font-family: sans-serif; }
+        .game-grid { 
+            display: grid; grid-template-columns: repeat(3, 150px); 
+            gap: 15px; justify-content: center; margin-top: 20px; 
+        }
+        .hole { 
+            width: 150px; height: 120px; background: #76c893; 
+            border-radius: 50% 50% 0 0; position: relative; overflow: hidden; 
+            border-bottom: 5px solid #55a630;
+        }
+        .mole { 
+            width: 100px; height: 100px; background: #9c6644; 
+            border-radius: 50% 50% 0 0; position: absolute; 
+            left: 25px; top: 120px; transition: 0.1s; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 30px;
+        }
+        .mole.up { top: 20px; }
+        .mole.bomb { background: #333; }
+        .score-board { font-size: 24px; font-weight: bold; color: #ff8fa3; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 20px; border: none; background: #ffafcc; color: white; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>✨ 打地鼠 ✨</h1>
+    <div class="score-board">分數: <span id="score">0</span> | 時間: <span id="time">30</span>s</div>
+    
+    <div class="game-grid">
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+        <div class="hole"><div class="mole" onclick="bonk(this)"></div></div>
+    </div>
+
+    <button id="startBtn" onclick="startGame()">開始遊戲</button>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let isPlaying = false;
+        const moles = document.querySelectorAll('.mole');
+
+        function startGame() {
+            if (isPlaying) return;
+            isPlaying = true;
+            score = 0;
+            timeLeft = 30;
+            document.getElementById('score').innerText = score;
+            document.getElementById('startBtn').disabled = true;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    isPlaying = false;
+                    document.getElementById('startBtn').disabled = false;
+                    alert("遊戲結束！總分：" + score);
+                }
+            }, 1000);
+
+            showMole();
+        }
+
+        function showMole() {
+            if (!isPlaying) return;
+            
+            const randomMole = moles[Math.floor(Math.random() * moles.length)];
+            const isBomb = Math.random() < 0.2; // 20% 出現炸彈
+            
+            if (isBomb) {
+                randomMole.classList.add('bomb');
+                randomMole.innerText = "💣";
+            } else {
+                randomMole.classList.remove('bomb');
+                randomMole.innerText = "🐹";
+            }
+
+            randomMole.classList.add('up');
+
+            // 隨分數變高，停留時間變短 (難度增加)
+            const duration = Math.max(400, 1000 - (score * 20)); 
+            
+            setTimeout(() => {
+                randomMole.classList.remove('up');
+                if (isPlaying) showMole();
+            }, duration);
+        }
+
+        function bonk(mole) {
+            if (!mole.classList.contains('up')) return;
+            
+            if (mole.classList.contains('bomb')) {
+                score -= 5;
+                mole.innerText = "💥";
+            } else {
+                score += 10;
+                mole.innerText = "⭐";
+            }
+            
+            document.getElementById('score').innerText = score;
+            mole.classList.remove('up');
+        }
+    </script>
+</body>
+</html>
