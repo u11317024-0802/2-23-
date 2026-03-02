@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡易中打練習</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            background-color: #f4f7f6;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .target-text {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            user-select: none; /* 防止複製貼上 */
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 20px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            resize: none;
+            box-sizing: border-box;
+        }
+        textarea:focus {
+            border-color: #007bff;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>中文打字練習</h2>
+    <p>請輸入下方的文字：</p>
+    
+    <div class="target-text" id="target">床前明月光，疑是地上霜。舉頭望明月，低頭思故鄉。</div>
+
+    <textarea id="inputField" placeholder="在此開始輸入..."></textarea>
+
+    <div class="status" id="status">進度：0 / 20</div>
+</div>
+
+<script>
+    const targetText = document.getElementById('target').innerText;
+    const inputField = document.getElementById('inputField');
+    const status = document.getElementById('status');
+
+    inputField.addEventListener('input', () => {
+        const inputText = inputField.value;
+        
+        // 更新進度
+        status.innerText = `進度：${inputText.length} / ${targetText.length}`;
+
+        // 檢查是否完全正確
+        if (inputText === targetText) {
+            status.innerHTML = '<span class="success">恭喜！全部輸入正確！</span>';
+            inputField.style.borderColor = "green";
+        } else if (targetText.startsWith(inputText)) {
+            inputField.style.borderColor = "#007bff"; // 輸入中且正確
+        } else {
+            inputField.style.borderColor = "red"; // 出錯了
+        }
+    });
+</script>
+
+</body>
+</html>
